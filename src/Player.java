@@ -3,6 +3,7 @@ public class Player {
     private int health = 100;
     private int energy = 100;
     private int damage = 15;
+    private int money = 0;
     public Player(String name) {
         this.name=name;
     }
@@ -34,6 +35,10 @@ public class Player {
 
     public void setHealth(int health) {
         this.health=health;
+    }
+
+    public void addMoney(int money) {
+        this.money+=money;
     }
 
     public void attack(Enemy enemy) {
