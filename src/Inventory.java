@@ -8,5 +8,6 @@ public class Inventory {
         } else if (potion.equals("energy")) {
             energize++;
         }
+
     }
 }
