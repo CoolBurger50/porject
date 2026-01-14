@@ -2,7 +2,7 @@ public class Enemy {
     private String type;
     private int health;
     private int damage;
-    private String[] types = {"Dragon", "Demon", "Orge", "Goblin"};
+    private String[] types = {"Basilisk", "Serpent", "Panther", "Amphithere"};
 
     public Enemy(int selec) {
         type = types[selec];
