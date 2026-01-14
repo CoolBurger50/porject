@@ -16,6 +16,10 @@ public class Player {
         return health;
     }
 
+    public int getMoney() {
+        return money;
+    }
+
     public String getName() {
         return name;
     }
