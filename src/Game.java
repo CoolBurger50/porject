@@ -1,142 +1,145 @@
 import java.util.Scanner;
 
 public class Game {
-    private String name;
-    private int totalBasilisk = 1;
-    private int totalSerpent = 3;
-    private int totalPanther = 6;
-    private int totalAmphithere = 8;
-    private boolean tutorial = true;
-    private boolean fight = true;
-    private boolean condition = true;
-    private boolean potion = true;
-    private boolean village = true;
 
-
-    private boolean quit = true;
-    private Scanner scanner;
-
+    private Scanner scanner = new Scanner(System.in);
+    private Player player;
+    private Inventory inventory = new Inventory();
+    private boolean running = true;
 
     public void play() {
-        Scanner scanner = new Scanner(System.in);
-        System.out.println("Hello and welcome to the Ashenshire Village");
-        System.out.print("What is your name? : ");
-        name = scanner.nextLine();
-        Player player = new Player(name);
-        System.out.println("--------------------------------------------");
-        System.out.println("Hello," + name + " there is a shop here in the town that allows you to buy potions");
-        System.out.println("Ever since the Basilisk arrived the creatures became really aggressive");
-        System.out.println("If you defeat the basilisk the other monster may become passive again");
-        checkHero();
-        System.out.println("--------------------------------------------");
-        while (totalBasilisk!=0 || quit==false) {
-            playRound();
+
+        System.out.print("Enter your name: ");
+        String name = scanner.nextLine();
+        player = new Player(name);
+
+        System.out.println("Welcome to Ashenshire Village, " + name + "!");
+
+        while (running) {
+            showMenu();
         }
-        System.out.println("You did it and saved the Ashenshire Village");
-        System.out.println("Thanks, " + name);
-        System.out.println("This will be the end of this story and may you have a time.");
+
+        System.out.println("Thanks for playing!");
     }
 
-    public void playRound() {
-        Scanner scanner = new Scanner(System.in);
-        if (tutorial) {
-            doTutorial();
-        }
-        System.out.println("What would you want to do?");
+    public void showMenu() {
+
+        System.out.println("\nWhat would you want to do?");
         System.out.println("1. Attack monster");
         System.out.println("2. Check condition");
         System.out.println("3. Use potions");
         System.out.println("4. Return to village");
         System.out.println("5. Run away and leave");
-        System.out.println("Enter option: ");
-        int option = scanner.nextInt();
-        System.out.println("--------------------------------------------");
-        if (option==1) {
+        System.out.print("Enter option: ");
 
-        } else if (option==2) {
+        int choice = scanner.nextInt();
+        scanner.nextLine();
 
-        } else if (option==3) {
-
-        } else if (option==4) {
-
-        } else if (option==5) {
-
+        if (choice == 1) {
+            fight();
+        } else if (choice == 2) {
+            checkCondition();
+        } else if (choice == 3) {
+            usePotions();
+        } else if (choice == 4) {
+            village();
+        } else if (choice == 5) {
+            running = false;
         } else {
-            System.out.print("Bad input would you like the tutorial again? (y/n)");
-            String response = scanner.nextLine();
-            if (response.equals("y")) {
-                doTutorial();
-                quit=false;
-            } else if (response.equals("n")){
-                System.out.println("OK! Dont make the same mistake");
-            } else {
-                System.out.println("Input \"y\" or \"n\"");
-            }
+            System.out.println("Invalid option.");
         }
-        System.out.println("--------------------------------------------");
     }
 
+    public void fight() {
 
-    public void checkRadar() {
-        System.out.println("Total Amphithere: " + totalAmphithere);
-        System.out.println("Total Panther: " + totalPanther);
-        System.out.println("Total Serpent: " + totalSerpent);
-        System.out.println("Total Basilisk: " + totalBasilisk);
-    }
-
-    public void encouter() {
-        System.out.println("Here is the amount of monsters left in the forest");
-        checkRadar();
-        System.out.println("--------------------------------------------");
+        System.out.println("Choose monster:");
         System.out.println("1. Amphithere");
         System.out.println("2. Panther");
         System.out.println("3. Serpent");
         System.out.println("4. Basilisk");
-        System.out.print("Which monster do you want to fight: ");
-        int option = scanner.nextInt();
-        System.out.println("--------------------------------------------");
-        if (option==1) {
 
-        } else if (option==2) {
+        int choice = scanner.nextInt();
+        scanner.nextLine();
 
-        } else if (option==3) {
+        Enemy enemy = new Enemy(choice);
+        System.out.println("You encountered a " + enemy.getType());
+        System.out.println("Press Enter to start the fight...");
+        scanner.nextLine();
 
-        } else if (option==4) {
+        while (!enemy.isDead() && player.getHealth() > 0) {
 
-        } else if (option==5) {
+            player.attack(enemy);
+            scanner.nextLine();
 
+            if (!enemy.isDead()) {
+                enemy.attack(player);
+            }
+
+            System.out.println("Your health: " + player.getHealth());
+            System.out.println(enemy.getType() + " health: " + enemy.getHealth());
+            System.out.println("Press Enter to continue...");
+            scanner.nextLine();
+        }
+
+        if (player.getHealth() <= 0) {
+            System.out.println("You died...");
+            running = false;
         } else {
+            System.out.println("You defeated the " + enemy.getType());
+            player.addMoney(enemy.getReward());
         }
     }
 
-    public void doTutorial() {
-        System.out.println("Option 1: Attack a monster nearby");
-        System.out.println("Option 2: See you health and energy levels");
-        System.out.println("Option 3: Use potions you got in the village");
-        System.out.println("Option 4: You return to village to buy potions or rest");
-        System.out.println("Option 5: You run away like a coward");
-        System.out.println();
-        System.out.print("Press any key to continue ");
-        scanner.nextLine();
-        System.out.println("--------------------------------------------");
+    public void checkCondition() {
+        System.out.println("Health: " + player.getHealth());
+        System.out.println("Energy: " + player.getEnergy());
+        System.out.println("Money: " + player.getMoney());
+        System.out.println("Healing potions: " + inventory.getHealingPotions());
+        System.out.println("Energy potions: " + inventory.getEnergyPotions());
     }
 
-    public void checkHero() {
-        Scanner scanner = new Scanner(System.in);
-        while (quit==true) {
-            if (tutorial) {
-                System.out.print("So are you down to help this town? (y/n): ");
+    public void usePotions() {
+
+        System.out.println("1. Healing potion");
+        System.out.println("2. Energy potion");
+
+        int choice = scanner.nextInt();
+        scanner.nextLine();
+
+        if (choice == 1) {
+            inventory.useHealingPotion(player);
+        } else if (choice == 2) {
+            inventory.useEnergyPotion(player);
+        }
+    }
+
+    public void village() {
+
+        System.out.println("\nYou returned to the village.");
+        System.out.println("1. Rest");
+        System.out.println("2. Buy healing potion (10 gold)");
+        System.out.println("3. Buy energy potion (10 gold)");
+        System.out.println("4. Leave village");
+
+        int choice = scanner.nextInt();
+        scanner.nextLine();
+
+        if (choice == 1) {
+            player.rest();
+            System.out.println("You rested and feel refreshed.");
+        } else if (choice == 2) {
+            if (player.getMoney() >= 10) {
+                player.addMoney(-10);
+                inventory.buyHealingPotion();
             } else {
-                System.out.print("Are you sure you want to quit? (y/n): ");
+                System.out.println("Not enough gold.");
             }
-            String response = scanner.nextLine();
-            if (response.equals("y")) {
-                System.out.println("Thank you so much hero ...");
-                quit=false;
-            } else if (response.equals("n")){
-                System.out.println("Are you sure, we need a hero ...");
+        } else if (choice == 3) {
+            if (player.getMoney() >= 10) {
+                player.addMoney(-10);
+                inventory.buyEnergyPotion();
             } else {
-                System.out.println("Input \"y\" or \"n\"");
+                System.out.println("Not enough gold.");
             }
         }
     }
